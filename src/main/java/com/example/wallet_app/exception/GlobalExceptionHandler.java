@@ -2,11 +2,15 @@ package com.example.wallet_app.exception;
 
 import com.example.wallet_app.dto.ApiErrorResponse;
 import jakarta.validation.ConstraintViolationException;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.lang.NonNullApi;
+import org.springframework.lang.Nullable;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -29,7 +33,9 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 ex.getMessage(),
                 null
         );
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(response);
     }
 
     @ExceptionHandler(InsufficientFundsException.class)
@@ -41,15 +47,17 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 ex.getMessage(),
                 null
         );
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(response);
     }
 
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(
-            MethodArgumentNotValidException ex,
-            HttpHeaders headers,
-            HttpStatusCode status,
-            WebRequest request) {
+             MethodArgumentNotValidException ex,
+             HttpHeaders headers,
+             HttpStatusCode status,
+             WebRequest request) {
 
         List<String> errors = ex.getBindingResult()
                 .getFieldErrors()
@@ -64,15 +72,17 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 "Validation failed",
                 errors
         );
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(response);
     }
 
     @Override
     protected ResponseEntity<Object> handleHttpMessageNotReadable(
-            HttpMessageNotReadableException ex,
+             HttpMessageNotReadableException ex,
             HttpHeaders headers,
-            HttpStatusCode status,
-            WebRequest request) {
+             HttpStatusCode status,
+             WebRequest request) {
 
         ApiErrorResponse response = new ApiErrorResponse(
                 Instant.now(),
@@ -81,7 +91,9 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 "Malformed JSON request",
                 null
         );
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(response);
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
@@ -98,7 +110,9 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 "Validation failed",
                 errors
         );
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(response);
     }
 
     @ExceptionHandler(Exception.class)

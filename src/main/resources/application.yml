@@ -1,10 +1,9 @@
-
 spring:
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/postgres1
-    username: postgres
-    password: 1234
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/post1}
+    username: ${SPRING_DATASOURCE_USERNAME:postgres}
+    password: ${SPRING_DATASOURCE_PASSWORD:1234}
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
@@ -16,7 +15,18 @@ spring:
 
   liquibase:
     change-log: classpath:db/changelog/db.changelog-master.yaml
+    enabled: ${SPRING_LIQUIBASE_ENABLED:true}
 
 server:
-  port: 8080
+  port: ${SERVER_PORT:8080}
+  error:
+    include-message: always
+    include-binding-errors: always
+
+retry:
+  max-attempts: 5
+  delay: 500
+
+mvc:
+  throw-exception-if-no-handler-found: true
 
