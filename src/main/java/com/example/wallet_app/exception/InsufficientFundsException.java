@@ -1,11 +1,9 @@
 package com.example.wallet_app.exception;
 
-public class InsufficientFundsException extends RuntimeException {
-    public InsufficientFundsException(String message) {
-        super(message);
-    }
+import java.util.UUID;
 
-    public InsufficientFundsException(String message, Throwable cause) {
-        super(message, cause);
+public class InsufficientFundsException extends RuntimeException {
+    public InsufficientFundsException(UUID walletId) {
+        super("Insufficient funds in wallet " + walletId);
     }
 }
